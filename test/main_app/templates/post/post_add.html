@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+<div id="post-add">
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <h3>제목</h3>
+            {{form.title}}
+            <h3>내용</h3>
+            {{form.content}}
+            <input type="hidden" name="writer" value="{{request.user.id}}" />
+            <div class="btn-box">
+                <button type="submit">작성</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

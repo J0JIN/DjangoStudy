@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+<div id="post-list">
+    <ul class="posts">
+        <li class="post">
+            <h2 class="title">
+                {{post.title}} {%if user == post.writer %}
+                <form method="POST" action="/post/delete/{{post.id}}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">글 삭제</button>
+                </form>
+                {% endif %}
+            </h2>
+            <div class="writer">
+                <div>작성자 : {{post.writer.username}}</div>
+            </div>
+            <div class="content">{{post.content}}</div>
+            <div class="comments">
+                <div class="comment-title">댓글 ({{post.comment_set.count}})</div>
+                {% for comment in post.comment_set.all %}
+                <div class="comment-content">
+                    <div class="content-head">
+                        <h4>{{comment.writer}}</h4>
+                        {%if user == comment.writer %}
+                        <form method="POST" action="/post/comment/delete/{{comment.id}}">
+                            {% csrf_token %}
+                            <button type="submit"><img src={% static '/svgs/delete.svg' %}></button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    <div class="content-body">{{comment.content}}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div id="post-detail">
+                <form method="POST" action="/post/comment/add/">
+                    {% csrf_token %} {{form.content}}
+                    <input type="hidden" name="post" value="{{post.id}}" />
+                    <input type="hidden" name="writer" value="{{request.user.id}}" />
+                    <button type="submit" class="btn btn-primary">작성</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+</div>
+{% endblock content %}
